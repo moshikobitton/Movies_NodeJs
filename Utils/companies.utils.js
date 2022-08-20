@@ -49,7 +49,7 @@ function getCompany(req, res){
         var request = new sql.Request();
         
         // query to the database and add new company.
-        request.query("SELECT * FROM Companies_M  WHERE username = '" + username + "' and password = '" + password +"'",
+        request.query("SELECT * FROM Companies_M WHERE username = '" + username + "' and password = '" + password +"'",
             function (err, recordset) {
             
             if (err) console.log(err)
@@ -100,11 +100,10 @@ function deleteCompany(req, res){
         var request = new sql.Request();
         
         // query to the database and add new company.
-        request.query("DELETE FROM Companies_M  WHERE id = '" + id + "' (SELECT* FROM Companies_M )",
+        request.query("DELETE FROM Company_Movie_M WHERE idC = '" + id + "' DELETE FROM Companies_M WHERE id = '" + id + "' SELECT * FROM Companies_M WHERE type <>'M'",
             function (err, recordset) {
-            
             if (err) console.log(err)
-
+            
             // send records as a response
             res.status(200).json({message : "Company deleted successfully!", recordset});
         });

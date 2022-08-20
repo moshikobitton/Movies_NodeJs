@@ -276,13 +276,11 @@
                 return;
             }
             tbl.clear();
-            console.log(results);
-            /*companies = results.recordset.recordset; // keep the cars array in a global variable;
+            companies = results.recordset.recordset; // keep the cars array in a global variable;
             redrawTable(tbl, companies);
             buttonEvents();
             $("#editDiv").hide();
             swal(results.message, "", "success");
-            */
             
         }
 
@@ -312,22 +310,7 @@
                 id = user.id;
             }
 
-            deleted = true;
-            //נעבור על מערך החברות, אם לא נמצא את המשתמש העכשווי סימן שהוא נמחק
-            for (let i = 0; i < companies.length; i++) {
-                if (companies[i].id == id) 
-                    deleted = false;
-            }
-
-            if (deleted) {
-                swal("You deleted your company, you are being transfered to login page.");
-                setTimeout(function () {
-                    window.location.replace("login.html");
-                    $("body").prop("disabled", true);
-
-                }, 4000);
-                return;
-            }
+        
             
             swal("Deleted Successfuly!", "Great Job", "success");
 
