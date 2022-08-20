@@ -60,8 +60,6 @@
             getUserLogin();
             
             $("#companyFRM").submit(submitCompany);
-            $("#divIMG").html("<img src='../ImagesRegister/your_logo.jpg' />");
-            
 
             getCountry();
             createSelectYears();
@@ -84,13 +82,13 @@
             }
         }
 
-        //להפעיל ברגע שהדף נטען.
+        // Get and rendering countries.
         function getCountry() {
             let apiCall = `https://restcountries.com/v2/all`;
             ajaxCall("GET", apiCall, "", getCountrySCB, errorCB);
         }
 
-        //להפעיל ברגע שהדף נטען.
+        // Get and rendering years.
         function createSelectYears() {
             let currentYear = new Date().getFullYear();
             let str = "";
@@ -101,10 +99,8 @@
 
         function getCountrySCB(countries) {
             countryList = "";
-            for (var i = 0; i < countries.length; i++) {
-                if (countries[i].name != 'Palestine, State of') //Not a country
-                    countryList += '<option value = "' + countries[i].name + '">' + countries[i].name + '</option>';
-            }
+            for (var i = 0; i < countries.length; i++) 
+                countryList += '<option value = "' + countries[i].name + '">' + countries[i].name + '</option>';
             $("#selectCountry").html(countryList);
         }
 
@@ -137,22 +133,12 @@
             $("#selectCountry").prop('selectedIndex', 0);
             $("#selectYear").prop('selectedIndex', 0);
             $("#logo").val("");
-            $("#divIMG").html("<img src='../ImagesRegister/your_logo.jpg' />");
-
         }
 
         function errorCB(status) {
             console.log(status);
         }
-        function showImage() {
-            var input = document.getElementById("logo");
-            var fReader = new FileReader();
-            fReader.readAsDataURL(input.files[0]);
-            fReader.onloadend = function (event) {
-                let str = "<img src='" + event.target.result + "'/>";
-                $("#divIMG").html(str);
-            }
-        }
+
     </script>
 </head>
 <body>
@@ -219,24 +205,7 @@
                 <td>
                     <select id="selectYear"></select>
                 </td>
-            </tr>
-
-            <tr>
-                
-                <td colspan="2">★ Logo Picture:  </td>
-            </tr>
-
-            <tr>
-                <td colspan="2">
-                    <input type="file" id="logo" placeholder="Choose Picture" required />
-                    <div id="divIMG"></div>
-                </td>
-            </tr>
-            <tr></tr>
-
-            <tr>
-                <td></td>
-            </tr>
+            </tr><tr></tr>
 
         </table>
         <input type="submit" id="btnSubmit" value="Submit" />
