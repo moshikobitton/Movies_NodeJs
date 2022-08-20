@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Get Movie</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="../Style/StyleSheet.css" rel="stylesheet" />
+    <link href="../Style/StyleSheetBTN.css" rel="stylesheet" />
+    <style>
+
+        img {
+            height: 250px;
+            width: 150px;
+        }
+
+        .imgTag {
+            position: relative;
+            right: 100px;
+        }
+
+        .header {
+            height: 50px;
+        }
+
+        select {
+            border-radius: 6px;
+            border-color: black;
+            background-color: darkslategray;
+            font-weight: bold;
+            width: 170px;
+            height: 25px;
+            font-size: 15px;
+        }
+
+        
+    </style>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../Scripts/jquery-3.3.1.min.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous">
+    </script>
+    <script src="../Scripts/enterVariable.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            getUserLogin();
+            let id = -1;
+            if (localStorage.getItem("cgroup1") != undefined) {
+                let user = JSON.parse(localStorage.getItem("cgroup1"));
+                id = user.id;
+            }
+            else {
+                swal("You need to log in");
+                window.location.replace("login.html");
+            }
+            
+            ajaxCall("GET", `http://localhost:5003/getCompanyMovies/${id}`, "", getMoviesSCB, errorCB);
+            $("#chooseBTN").click(getMovieByID);
+
+            
+        });
+
+        var id = null;
+        function animationImg(start) {
+            var div = $(".imgTag");
+            var pos = start;
+            clearInterval(id);
+            id = setInterval(function () {
+                if (pos == 0 || pos == 360)
+                    clearInterval(id);
+                else if (start == 350) {
+                    pos -= 10;
+                    div.css("left", pos + 'px');
+                }
+                else {
+                    pos += 10;
+                    div.css("left", pos + 'px');
+                }
+                if (pos == 360)
+                    animationImg(350);
+            }, 10);
+        }
+
+        function getMoviesSCB(moviesData) {
+            let movies = moviesData.recordset;
+            str = "<option value ='0'>Choose a movie</option>";
+            for (var i = 0; i < movies.length; i++)
+                str += '<option value = "' + movies[i].id + '">' + movies[i].name + '</option>';
+            $("#moviesList").html(str);
+        }
+
+        function errorCB(error) {
+            console.log(error);
+        }
+
+
+        function getMovieByID() {
+            let id = $("#moviesList").find(":selected").val();
+            if (id == 0) {
+                swal("Please choose a movie!");
+                return;
+            }
+
+            ajaxCall("GET", `http://localhost:5003/getMovie/${id}`, "", getMovieByIDSuccessCB, errorCB);
+        }
+
+        function getMovieByIDSuccessCB(movieData) {
+            let movie = movieData.recordset[0];
+            if (movie.id == undefined || movie.name == undefined || movie.genre == undefined || movie.publish == undefined || movie.avg_sc == undefined || movie.src == undefined || movie.descr == undefined) {
+                swal("Some details about this movie is missing. Please try other movies.");
+
+                return;
+            }
+            str = "<p>" + "Title: " + movie.name + "</p> <p>Overview: " + movie.descr + "</p> <p>Release date: " + movie.publish + "</p>  <p>Average score: " + movie.avg_sc + "</p> <p>Genres: ";
+            if (movie.genre != "") 
+                str += movie.genre + ".</p>";
+            else str += "None.</p>";
+            $("#overView").html(str);
+
+
+            let src = "https://image.tmdb.org/t/p/original" + movie.src;
+            let img = "<img class='imgTag' src='" + src + "' />";
+            $("#imgM").html(img);
+            $("#btn").html("<button class='delete btn' id='" + movie.id + "'><i class='fa fa-remove'></i> Delete</button>");
+            routeDeleteButton();
+            animationImg(10);
+        }
+
+        function deleteMovieSCB(results){
+
+            swal(results.message, "", "success");
+            setTimeout('location.reload()',2000);
+        }
+
+        function routeDeleteButton(){
+            $('.delete').click(function() {
+                let movieId = this.id;
+                let id = JSON.parse(localStorage.getItem("cgroup1")).id;
+
+                swal({ // this will open a dialouge
+                    title: "Are you sure ??",
+                    text: "",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true
+                })
+                    .then(function (willDelete) {
+                        if (willDelete) ajaxCall("DELETE", `http://localhost:5003/deleteMovieFromCompany/${id}/${movieId}`, "", deleteMovieSCB, errorCB);
+                        else swal("Not Deleted!");
+                    });                
+            });
+        }
+
+
+
+
+    </script>
+
+</head>
+<body>
+    <div class="header">
+
+        <h1>Library</h1>
+        <div class="navbar">
+            <a class="btn btn-white btn-animate" href="insert.html">Search</a>
+            <a class="btn btn-white btn-animate" href="viewMovie.html">Library</a>
+            <a class="btn btn-white btn-animate" href="registerCompany.html">Register</a>
+            <a id="login" class="btn btn-white btn-animate" href="login.html">Login</a>
+            <a id="dataTable" class="btn btn-white btn-animate" href="DataTable.html">Companies</a>
+
+        </div>
+        <br />
+        Movie name:   
+        <select id="moviesList"> </select>
+        <button id="chooseBTN"> Choose</button>
+        <br /><br />
+        <div id="imgM"></div>
+        <div id="overView"></div>
+        <p id="btn"></p>
+    </div>
+
+    
+
+</body>
+</html>

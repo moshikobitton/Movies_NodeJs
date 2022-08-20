@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="../Style/StyleSheet.css" rel="stylesheet" />
+    <link href="../Style/StyleSheetBTN.css" rel="stylesheet" />
+    <style>
+        .loginTable {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../Scripts/jquery-3.3.1.min.js"></script>
+    <script src="../Scripts/enterVariable.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+
+
+    <script>
+
+        $(document).ready(function () {
+            setUserLogin(false);
+            getUserLogin();
+        });
+
+        function checkLogin() {
+            let username = $("#userTB").val();
+            let password = $("#passTB").val();
+ 
+            let api = `http://localhost:5003/getCompany/${username}/${password}`;
+            ajaxCall("GET", api, "", successCB, errorCB);
+        } 
+
+        function successCB(data) {
+            console.log(data);
+
+            let userLogged = data.results.recordset[0];
+            if (userLogged != undefined)
+            {
+                swal("Succesfully entered");
+                setUserLogin(true);    
+                localStorage.setItem("cgroup1", JSON.stringify(userLogged));
+                    
+                enableHref();
+                $("#login").html("Log out");
+                $("#userTB").hide()
+                $("#passTB").hide()
+                $("#loginBTN").hide();
+                $('.loginTable').each(function () {
+                    $(this).hide();
+                });
+
+                window.location.replace("insert.html");
+                return;
+            }
+            swal("Username or password is incorrect please try again.");
+            
+        }
+
+        function errorCB(error) {
+            console.log("error! " + error);
+        }
+
+        
+
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h1 class="regHeader">Login</h1>
+        <div class="navbar">
+            <a id="insert" class="btn btn-white btn-animate" href="insert.html">Search</a>
+            <a id="view" class="btn btn-white btn-animate" href="viewMovie.html">Library</a>
+            <a class="btn btn-white btn-animate" href="registerCompany.html">Register</a>
+            <a id="login" class="btn btn-white btn-animate" href="login.html">Login</a>
+            <a id="dataTable" class="btn btn-white btn-animate" href="DataTable.html">Companies</a>
+
+
+        </div>
+        <br />
+    </div>
+    <table class="loginTable">
+        <tr>
+            <td>Username</td>
+            <td><input type="text" id="userTB" placeholder="Enter username" required minlength="3" maxlength="15" /></td>
+
+        </tr>
+        <tr>
+            <td>Password</td>
+            <td><input type="password" id="passTB" placeholder="Enter password" required minlength="8" maxlength="20" /></td>
+        </tr>
+    </table>
+    <input type="button" id="loginBTN" value="Login" onclick="checkLogin()" />
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+create table Movies_M(
+	id int primary key,
+	name nvarchar(100),
+	genre nvarchar(100),
+	publish nvarchar(20),
+	avg_sc float,
+	src nvarchar(200),
+	descr nvarchar(2000)
+)
+
+create table Companies_M(
+	id int identity(1,1) primary key,
+	username nvarchar(30) unique,
+	password nvarchar(30),
+	compName nvarchar(30),
+	oprCountry nvarchar(30),
+	numCinemaOwns smallint,
+	established  nvarchar(5),
+	type char default('C')
+)
+
+create table Company_Movie_M(
+	idC int foreign key references Companies_M(id),
+	idM int foreign key references Movies_M(id),
+	primary key(idC, idM)
+)
