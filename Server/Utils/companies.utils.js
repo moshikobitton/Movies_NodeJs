@@ -1,4 +1,4 @@
-// This file contains all RESTful calls functions, constructor/s and lists.
+// This file contains all RESTful calls functions.
 
 const sql = require("mssql");
 require('dotenv').config();
@@ -11,7 +11,7 @@ const dbConfig = {
     trustServerCertificate: true
 };
 
-// connect to your database
+// connect to your database (Microsoft SQL Server)
 sql.connect(dbConfig);
 
 // Api = "/addCompany".

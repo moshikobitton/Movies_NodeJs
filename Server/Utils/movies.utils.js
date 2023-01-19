@@ -1,3 +1,5 @@
+// This file contains all RESTful calls functions.
+
 const sql = require("mssql");
 require('dotenv').config();
 
@@ -9,7 +11,7 @@ const dbConfig = {
     trustServerCertificate: true
 };
 
-// connect to your database
+// connect to your database (Microsoft SQL Server)
 sql.connect(dbConfig);
 
 // Api = "/addMovie".
@@ -20,11 +22,11 @@ function addMovie(req, res){
         const rawValues = req.body;
         console.log(rawValues);
         // query to the database and add new movie.
-        request.query("INSERT INTO Movies_M ([id],[name],[genre],[publish],[avg_sc],[src],[descr]) VALUES ('"+rawValues.Id+"','"+rawValues.Name+"','"+rawValues.Genre+"','"+rawValues.Publish+"','"+rawValues.Avg_sc+"','"+rawValues.Src+"','"+rawValues.Descr.replace(/'/gi,'`')+"')",
+        request.query("INSERT INTO Movies_M ([id],[name],[genre],[publish],[avg_sc],[src],[descr]) VALUES ('"+rawValues.Id+"','"+rawValues.Name.replace(/'/gi,'`')+"','"+rawValues.Genre+"','"+rawValues.Publish+"','"+rawValues.Avg_sc+"','"+rawValues.Src+"','"+rawValues.Descr.replace(/'/gi,'`')+"')",
             function (err, recordset) {
             
-                let message = "success";
-                if (err) message = "fail"; 
+                let message = "Added successfully";
+                if (err) message = "Already exist"; 
 
             // send records as a response
             res.status(200).json({message , IdM:rawValues.Id});

@@ -10,6 +10,23 @@
             margin-left: auto;
             margin-right: auto;
         }
+        input[type=button] {
+            width: 200px;
+            border-radius: 10px;
+            border-color: black;
+            background-color: yellow;
+            font-weight: bold;
+        }
+        table {
+            border-spacing: 20px 10px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        td input {
+            width: 200px;
+        }
+
     </style>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="../Scripts/jquery-3.3.1.min.js"></script>
@@ -34,7 +51,8 @@
 
         function successCB(data) {
             console.log(data);
-
+            
+            
             let userLogged = data.results.recordset[0];
             if (userLogged != undefined)
             {
@@ -53,8 +71,11 @@
 
                 window.location.replace("insert.html");
                 return;
+                
             }
             swal("Username or password is incorrect please try again.");
+            
+            
             
         }
 
@@ -83,12 +104,11 @@
     <table class="loginTable">
         <tr>
             <td>Username</td>
-            <td><input type="text" id="userTB" placeholder="Enter username" required minlength="3" maxlength="15" /></td>
-
+            <td><input type="text" id="userTB" placeholder="Enter username" required minlength="3" maxlength="40" /></td>
         </tr>
         <tr>
             <td>Password</td>
-            <td><input type="password" id="passTB" placeholder="Enter password" required minlength="8" maxlength="20" /></td>
+            <td><input type="password" id="passTB" placeholder="Enter password" required minlength="8" maxlength="40" /></td>
         </tr>
     </table>
     <input type="button" id="loginBTN" value="Login" onclick="checkLogin()" />
