@@ -1,5 +1,4 @@
 // This file contains all RESTful calls functions.
-
 const sql = require("mssql");
 require('dotenv').config();
 
@@ -20,7 +19,6 @@ function addMovie(req, res){
     try {
         var request = new sql.Request();
         const rawValues = req.body;
-        console.log(rawValues);
         // query to the database and add new movie.
         request.query("INSERT INTO Movies_M ([id],[name],[genre],[publish],[avg_sc],[src],[descr]) VALUES ('"+rawValues.Id+"','"+rawValues.Name.replace(/'/gi,'`')+"','"+rawValues.Genre+"','"+rawValues.Publish+"','"+rawValues.Avg_sc+"','"+rawValues.Src+"','"+rawValues.Descr.replace(/'/gi,'`')+"')",
             function (err, recordset) {
@@ -46,16 +44,19 @@ function addMovieToCompany(req, res){
     try {
         var request = new sql.Request();
         const rawValues = req.body;
-        console.log(rawValues);
         // query to the database and add new company.
         request.query("INSERT INTO Company_Movie_M ([idC],[idM]) VALUES ('"+rawValues.IdC+"','"+rawValues.IdM+"')",
             function (err, recordset) {
-            let message = "Movie added successfully";
+            let message = "Movie added successfully!";
+            let type = "success";
             if (err) message = err.originalError.info.message;
-            if (message.includes("Violation of PRIMARY KEY")) message = "This movie already exist for you!";
+            if (message.includes("Violation of PRIMARY KEY")){
+                message = "This movie already exist for you!";
+                type = "info";
+            } 
 
             // send records as a response
-            res.status(200).json({message});
+            res.status(200).json({message, type});
         });
         
     } catch (error) {
@@ -71,7 +72,7 @@ function getCompanyMovies(req,res){
         let id = req.params.id;
         var request = new sql.Request();
         // query to the database and get the movies
-        request.query("SELECT id, name " +
+        request.query("SELECT id, name, src " +
                       "FROM Movies_M inner join Company_Movie_M on id = idM " +
                       "WHERE idC ='" + id +"'", 
             function (err, recordset) {
@@ -135,3 +136,48 @@ function deleteMovie(req, res){
     }
 }
 exports.deleteMovie = deleteMovie;
+
+
+//`https://api.themoviedb.org/3/search/movie?api_key=${key}&query=${name}`;
+function getMoviesByName(req, res){
+    fetch(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.key}&query=${req.params.name}`, {
+        method: 'GET',
+        headers: new Headers({
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json; charset=UTF-8',
+        })
+      })
+        .then(result => {
+          return result.json()
+        })
+        .then(
+          (result) => {
+            res.status(200).json(result);
+          },
+          (error) => {
+            res.status(500).json({error: "Something is wrong with 'themoviedb' site "});
+          });
+}
+exports.getMoviesByName = getMoviesByName;
+
+function getMovieByIdFromApi(req, res){
+    
+    fetch(`https://api.themoviedb.org/3/movie/${req.params.id}?api_key=${process.env.key}`, {
+        method: 'GET',
+        headers: new Headers({
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json; charset=UTF-8',
+        })
+      })
+        .then(result => {
+          return result.json()
+        })
+        .then(
+          (result) => {
+            res.status(200).json(result);
+          },
+          (error) => {
+            res.status(500).json({error: "Something is wrong with 'themoviedb' site "});
+          });
+}
+exports.getMovieByIdFromApi = getMovieByIdFromApi;

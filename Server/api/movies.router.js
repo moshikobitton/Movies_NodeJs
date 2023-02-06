@@ -24,5 +24,11 @@ moviesRouter.get("/getMovie/:id",utils.getMovieById);
 // Creating 'delete' call for deleting a movie from company.
 moviesRouter.delete("/deleteMovieFromCompany/:id/:movieId",utils.deleteMovie);
 
+// Creating 'get' call that returns all movies by name from external api db.
+moviesRouter.get("/getMoviesByName/:name",utils.getMoviesByName);
+
+// Creating 'get' call that returns a movie by id from external api db.
+moviesRouter.get("/getMovieByIdFromApi/:id",utils.getMovieByIdFromApi);
+
 // MUST to export this file for main server.
 module.exports = moviesRouter;
