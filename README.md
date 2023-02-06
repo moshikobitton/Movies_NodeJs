@@ -1,4 +1,6 @@
 # Movies_NodeJs
-Movies project with api and ajax call using RESTful. Client -> JS-Jquery. Server -> Nodejs. DB -> Microsoft SQL Server.
+Movies project with api and external api calls using RESTful. 
+Client -> React.js
+Server -> Node.js and Express.js
+DB -> Microsoft SQL Server
 
-Demo - https://youtu.be/5M_e05HJW1w
